@@ -76,3 +76,5 @@ O roteiro verifica seleção persistente, composição de mensagens, download, c
 ## Fonte geográfica
 
 Malha estadual simplificada do IBGE: `https://servicodados.ibge.gov.br/api/v3/malhas/estados/32?formato=application/vnd.geo+json&qualidade=minima`. O marcador representa Serra de forma aproximada; não representa geocodificação do endereço comercial nem cobertura de entrega.
+
+As migrações e o schema do template original foram preservados em `legacy-drizzle/` para referência; não são migrações desta aplicação estática e não são empacotados para produção.
