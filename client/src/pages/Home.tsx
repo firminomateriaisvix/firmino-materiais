@@ -24,7 +24,7 @@ import {
 import { categories, items, type CatalogItem, type Category } from "@/lib/catalog";
 
 const PHONE = "5527981224105";
-const EMAIL = "firmino.servicos.adm1@hotmail.com";
+const EMAIL = "anderson@firminomateriais.com.br";
 const waLink = (message: string) => `https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`;
 const generalQuote = waLink("Olá, Firmino Materiais! Gostaria de conversar sobre um orçamento.");
 
