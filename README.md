@@ -43,7 +43,7 @@ pnpm build:static
 pnpm dev:static
 ```
 
-Desenvolvimento: `http://127.0.0.1:4180`. Prévia da compilação: `pnpm preview`. Saída de produção: **dist/public/**. Publique o conteúdo dessa pasta na raiz do domínio, usando fallback de SPA para `index.html`. Não publique `node_modules`, `.git`, arquivos de ambiente ou o código do servidor legado.
+Desenvolvimento: `http://127.0.0.1:4180`. Prévia da compilação: `pnpm preview`. Saída de produção: **dist/**. Publique o conteúdo dessa pasta na raiz do domínio, usando fallback de SPA para `index.html`. Não publique `node_modules`, `.git`, arquivos de ambiente ou o código do servidor legado.
 
 O clone conserva arquivos do servidor e componentes do template original para rastreabilidade. **Eles não são utilizados nem necessários pela aplicação estática V2.** Os comandos recomendados são `dev:static`, `build:static`, `check` e `preview`. O `tsconfig.json` verifica a árvore efetivamente importada pela entrada e a configuração de build. Os scripts legados de servidor/banco não fazem parte desta publicação.
 

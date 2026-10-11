@@ -9,7 +9,7 @@ O código da V2 conserva a origem e seu histórico Git. Trabalhe na pasta `firmi
 Destino escolhido: **firminomateriais.com.br**. Não usar `rpmintegra.com.br` como domínio do site; ele aparece somente no contato pessoal do Anderson. Conectar o domínio após aprovação desta versão e autorização para alterar a hospedagem/DNS. Esta etapa ainda não foi executada.
 
 1. Aprovar conteúdo, direção visual, endereço comercial e contatos.
-2. Definir a hospedagem estática e registrar sua configuração de build: `pnpm install --frozen-lockfile`, `pnpm build:static`, saída `dist/public`.
+2. Definir a hospedagem estática e registrar sua configuração de build: `pnpm install --frozen-lockfile`, `pnpm build:static`, saída `dist`.
 3. Adicionar o domínio no painel da hospedagem e seguir os registros DNS que ela fornecer. Não inventar IPs ou destinos.
 4. Preservar MX, SPF, DKIM e DMARC do serviço de e-mail ao alterar os registros do site. Não remover registros de outros serviços.
 5. Validar domínio raiz, `www`, HTTPS e redirecionamento para a variante principal escolhida.

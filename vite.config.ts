@@ -6,6 +6,6 @@ export default defineConfig({
  root: path.resolve(import.meta.dirname,"client"),
  plugins:[react(),tailwindcss()],
  resolve:{alias:{"@":path.resolve(import.meta.dirname,"client/src"),"@shared":path.resolve(import.meta.dirname,"shared")}},
- build:{outDir:path.resolve(import.meta.dirname,"dist/public"),emptyOutDir:true},
+ build:{outDir:path.resolve(import.meta.dirname,"dist"),emptyOutDir:true},
  server:{host:"127.0.0.1",port:4180,strictPort:true}
 });
