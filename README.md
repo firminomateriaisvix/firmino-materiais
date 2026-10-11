@@ -1,5 +1,7 @@
 # Firmino Materiais — V2
 
+Versão **2.1.0** — repositório: https://github.com/ramonpmendesx1707/firmino-materiais-v2
+
 Versão independente de apresentação e consulta comercial para a Firmino Materiais, em Serra/ES. A implementação parte do repositório `https://github.com/firminomateriaisvix/firmino-materiais`, commit `c11feb7f2e068bdd53fdb0b0cc4aa31633e6dfc8`, preservando os **26 itens e nove categorias** publicados nessa origem. Desenvolvimento na branch local `v2`; o repositório original não recebe alterações automaticamente.
 
 ## O que esta versão entrega
@@ -11,10 +13,12 @@ Versão independente de apresentação e consulta comercial para a Firmino Mater
 - WhatsApp e e-mail preparados com a lista completa e quebras de linha. O usuário revisa e envia no aplicativo de destino; não existe envio automático.
 - Download da solicitação em texto UTF-8.
 - Comparativo de até três itens com informações reais disponíveis; cards verticais em telas menores.
-- Mapa do Espírito Santo com Serra destacada, endereço consultável e destino informado transferido para a cotação.
+- Mapa do Brasil com o Espírito Santo e a sede em Serra destacados, endereço consultável e destino informado transferido para a cotação.
 - Animações de entrada, marcador animado, estados de interação, foco visível, modais com contenção de foco, Escape e respeito à preferência de movimento reduzido.
 
 ## Dados e limites
+
+Prévia atualizada: https://firmino-materiais-v2.safc-conceicao87.chatgpt.site
 
 Domínio de destino definido pelo cliente: **firminomateriais.com.br**. A publicação de prévia não altera DNS, registro do domínio ou serviço de e-mail.
 
@@ -52,8 +56,8 @@ O clone conserva arquivos do servidor e componentes do template original para ra
 - `client/src/pages/Home.tsx`: página, busca, categorias, produtos e contatos.
 - `client/src/components/Commerce.tsx`: seleção, comparação, orçamento e composição de mensagens.
 - `client/src/components/ServiceMap.tsx`: localização e consulta de destino.
-- `client/src/lib/map-data.ts`: contorno projetado e ponto aproximado de Serra.
-- `client/public/maps/espirito-santo.geojson`: malha original do IBGE.
+- `client/src/lib/map-data.ts`: malha dos 27 estados projetada e ponto aproximado de Serra.
+- `client/public/maps/`: malhas originais do IBGE.
 - `client/public/catalog/`: imagens originais locais.
 - `client/src/index.css`: estilos originais; `v2.css`: refinamentos e componentes da V2.
 - `client/public/favicon.svg` e `manifest.webmanifest`: identidade da aba e aplicação.
@@ -78,3 +82,13 @@ O roteiro verifica seleção persistente, composição de mensagens, download, c
 Malha estadual simplificada do IBGE: `https://servicodados.ibge.gov.br/api/v3/malhas/estados/32?formato=application/vnd.geo+json&qualidade=minima`. O marcador representa Serra de forma aproximada; não representa geocodificação do endereço comercial nem cobertura de entrega.
 
 As migrações e o schema do template original foram preservados em `legacy-drizzle/` para referência; não são migrações desta aplicação estática e não são empacotados para produção.
+
+## Atualização 2.1.0
+
+Busca por dados do item, sem correspondência automática com o nome da categoria. Termos separados por espaço são combinados: `tubo inox` encontra o item de tubos, sem listar toda a categoria. Trocar de categoria limpa busca e filtro de salvos, e o botão Limpar filtros restaura a lista completa.
+
+O fundo novo em `client/public/brand/hero-industrial.webp` foi gerado por IA sem textos ou marcas, em 1672 × 941 px. O original PNG está em `assets/masters/hero-industrial.png`. É uma composição ilustrativa, não prova de estoque ou fotografia da empresa. Prompt e diretrizes da copy estão em `docs/IDENTIDADE-E-COPY.md`. O movimento do fundo acompanha a rolagem e respeita movimento reduzido.
+
+O GitHub contém código, lockfile, imagens, malhas geográficas, testes e documentação. Não é necessário versionar dependências instaladas ou a pasta de build: `pnpm install --frozen-lockfile` e `pnpm build:static` recriam o site. A automação em `.github/workflows/build-v2.yml` verifica tipos, compila e disponibiliza o build como artefato.
+
+Malha de estados do Brasil: https://servicodados.ibge.gov.br/api/v3/malhas/paises/BR?formato=application/vnd.geo%2Bjson&qualidade=minima&intrarregiao=UF . O mapa identifica a sede; não afirma cobertura nacional de entrega.

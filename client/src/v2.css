@@ -14,3 +14,11 @@ body{font-size:16px;line-height:1.6}button,input,textarea{font:inherit}button{cu
 
 @media(max-width:800px){.comparison-grid{grid-template-columns:1fr}}
 .intro-strip-inner>span.intro-note,.results-line,.catalog-foot{color:#526575}
+
+/* V2.1: a crisp visual introduction with movement tied to scrolling. */
+.hero{background-image:none!important;background-color:#071421}.hero-visual{position:absolute;inset:-65px 0;z-index:-1;background-image:linear-gradient(90deg,#071421ed 0%,#071421c9 34%,#07142133 75%),url('/brand/hero-industrial.webp');background-size:cover;background-position:center;transform:translateY(var(--hero-shift,0));animation:hero-visual-enter 1.3s ease-out both;will-change:transform}.hero-content{animation:hero-copy-enter .8s .15s ease-out both}.hero h1{max-width:850px}.hero-content>p{max-width:540px}.hero::after{display:none}.active-filters{display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:14px;color:var(--muted);padding:10px 0}.active-filters button{display:flex;align-items:center;gap:8px;border:0;background:none;text-decoration:underline;text-underline-offset:4px;padding:10px;color:var(--navy)}.filter-chip[aria-pressed=true]{background:var(--navy);color:white;border-color:var(--navy)}.brazil-map svg{width:100%;height:auto;max-height:520px;display:block}.brazil-map .map-pulse{transform-box:fill-box;transform-origin:center}.brazil-map .map-topline{gap:12px}.hero-query input{font-size:16px}
+@keyframes hero-visual-enter{from{opacity:0;filter:blur(3px)}to{opacity:1;filter:blur(0)}}
+@keyframes hero-copy-enter{from{opacity:0;translate:0 14px}to{opacity:1;translate:0 0}}
+@media(max-width:680px){.hero-visual{background-position:59% center;background-image:linear-gradient(90deg,#071421e6,#071421aa),url('/brand/hero-industrial.webp')}.hero h1{font-size:clamp(49px,12.5vw,73px)}.hero-content>p{font-size:17px}.brazil-map{padding:18px}.brazil-map .map-topline{font-size:11px}.brazil-map svg{margin-block:8px}.contact-inner h2{font-size:43px}}
+@media(prefers-reduced-motion:reduce){.hero-visual,.hero-content{animation:none;transform:none;will-change:auto}}
+.hero h1{max-width:960px;font-size:clamp(62px,6.5vw,94px)}@media(max-width:680px){.hero h1{font-size:clamp(49px,12.5vw,73px)}}

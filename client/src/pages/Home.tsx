@@ -108,18 +108,27 @@ function HomeContent() {
   const [selectedItem, setSelectedItem] = useState<CatalogItem | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const applyCategory=(id:string)=>{setActiveCategory(id);setQuery("");setOnlySaved(false)};
+  const clearFilters=()=>{setActiveCategory("todas");setQuery("");setOnlySaved(false)};
   const visibleItems = useMemo(() => {
     const fold=(s:string)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("pt-BR");
     const normalizedQuery = fold(query.trim());
     return items.filter((item) => {
       const category = categories.find((entry) => entry.id === item.categoryId)!;
       const matchesCategory = activeCategory === "todas" || item.categoryId === activeCategory;
-      const matchesQuery = !normalizedQuery || [item.name, item.description, item.detail, category.name]
-        .some((field) => fold(field).includes(normalizedQuery));
+      const searchable=fold([item.name,item.description,item.detail].join(" "));
+      const matchesQuery = !normalizedQuery || normalizedQuery.split(/\s+/).every(term=>searchable.includes(term));
       return matchesCategory && matchesQuery && (!onlySaved || shop.lines.some(l=>l.id===item.id));
     });
   }, [activeCategory, query, onlySaved,shop.lines]);
   useEffect(()=>setPageSize(12),[activeCategory,query,onlySaved]);
+
+  useEffect(()=>{
+    const hero=document.querySelector<HTMLElement>(".hero");
+    if(!hero||window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+    let frame=0;const update=()=>{if(frame)return;frame=requestAnimationFrame(()=>{hero.style.setProperty("--hero-shift",`${Math.min(window.scrollY*.12,65)}px`);frame=0})};
+    window.addEventListener("scroll",update,{passive:true});return()=>{window.removeEventListener("scroll",update);cancelAnimationFrame(frame)};
+  },[]);
 
   useEffect(() => {
     if (!selectedItem) return;
@@ -139,7 +148,7 @@ function HomeContent() {
   },[]);
 
   const chooseCategory = (id: string) => {
-    setActiveCategory(id);
+    applyCategory(id);
     setMenuOpen(false);
     document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -176,17 +185,17 @@ function HomeContent() {
 
       <main>
         <section className="hero" aria-labelledby="hero-title">
-          <div className="hero-grain" />
+          <div className="hero-visual" aria-hidden="true" />
           <div className="hero-content">
-            <div className="eyebrow eyebrow-light"><span className="eyebrow-line" /> Materiais, locações e serviços · Serra / ES</div>
-            <h1 id="hero-title">A sua lista avança.<br /><em>A operação também.</em></h1>
-            <p>Materiais industriais, locações e serviços para manter cada projeto em movimento.</p>
+            
+            <h1 id="hero-title">Sua operação precisa.<br /><em>A Firmino conecta.</em></h1>
+            <p>Do material de manutenção ao equipamento para o próximo serviço: reúna o que precisa e converse com a Firmino em uma única cotação.</p>
             <div className="hero-actions">
-              <a className="button button-amber" href="#catalogo">Explorar catálogo <ArrowRight size={17} /></a>
-              <a className="button button-outline-light" href={generalQuote} target="_blank" rel="noopener noreferrer"><MessageCircle size={17} /> Fale com a Firmino</a>
+              <a className="button button-amber" href="#catalogo">Montar minha cotação <ArrowRight size={17} /></a>
+              <a className="button button-outline-light" href={generalQuote} target="_blank" rel="noopener noreferrer"><MessageCircle size={17} /> Já tenho uma lista</a>
             </div>
-            <form className="hero-query" onSubmit={event=>{event.preventDefault();setActiveCategory("todas");setOnlySaved(false);document.getElementById("catalogo")?.scrollIntoView({behavior:"smooth"})}}><label htmlFor="hero-search">O que o seu projeto precisa?</label><div><Search size={20}/><input id="hero-search" value={query} onChange={event=>setQuery(event.target.value)} placeholder="Busque um material ou serviço"/><button type="submit" aria-label="Pesquisar no catálogo"><ArrowRight size={21}/></button></div></form>
-            <div className="hero-footnote"><span className="hero-footnote-rule" /> Soluções para indústria, manutenção e operação</div>
+            <form className="hero-query" onSubmit={event=>{event.preventDefault();setActiveCategory("todas");setOnlySaved(false);document.getElementById("catalogo")?.scrollIntoView({behavior:"smooth"})}}><label htmlFor="hero-search">Qual é o próximo item da sua lista?</label><div><Search size={20}/><input id="hero-search" value={query} onChange={event=>setQuery(event.target.value)} placeholder="Busque um material ou serviço"/><button type="submit" aria-label="Pesquisar no catálogo"><ArrowRight size={21}/></button></div></form>
+            <div className="hero-footnote"><span className="hero-footnote-rule" /> Materiais, locações e serviços. Uma conversa para começar.</div>
           </div>
           <div className="hero-index" aria-hidden="true"><span>FM</span><i /> ESPECIALISTAS EM FORNECIMENTO</div>
           <a href="#categorias" className="hero-scroll" aria-label="Descer até as categorias"><span>Explore as soluções</span><ChevronDown size={15} /></a>
@@ -194,7 +203,7 @@ function HomeContent() {
 
         <section className="intro-strip" aria-label="Áreas de atuação">
           <div className="intro-strip-inner">
-            <span className="intro-lead">Uma parceira para cada frente</span>
+            <span className="intro-lead">Sua lista tem várias frentes. A conversa pode ser uma só.</span>
             <span><Wrench size={17} /> <b>Materiais</b></span>
             <span><Factory size={17} /> <b>Locações</b></span>
             <span><HardHat size={17} /> <b>Serviços</b></span>
@@ -204,8 +213,8 @@ function HomeContent() {
 
         <section className="section categories-section" id="categorias">
           <div className="section-heading">
-            <div><div className="eyebrow"><span className="eyebrow-line" /> Nove especialidades, uma conversa</div><h2>Soluções por <em>especialidade.</em></h2></div>
-            <p>Navegue pelas categorias e encontre o caminho certo para sua necessidade.</p>
+            <div><div className="eyebrow"><span className="eyebrow-line" /> Nove especialidades, uma conversa</div><h2>Do reparo de hoje<br/><em>ao projeto que vem.</em></h2></div>
+            <p>Ferramentas, proteção, elétrica, tubulações e mais. Escolha uma categoria e transforme sua necessidade em uma lista pronta para cotar.</p>
           </div>
           <div className="category-navigation"><span>Deslize para explorar as especialidades</span><div><button className="icon-button" aria-label="Categorias anteriores" onClick={()=>scrollCategories(-1)}><ChevronLeft size={22}/></button><button className="icon-button" aria-label="Próximas categorias" onClick={()=>scrollCategories(1)}><ChevronRight size={22}/></button></div></div>
           <div className="category-grid" ref={categoryRail}>
@@ -216,19 +225,20 @@ function HomeContent() {
         <section className="catalog-section" id="catalogo">
           <div className="section catalog-inner">
             <div className="section-heading catalog-heading">
-              <div><div className="eyebrow"><span className="eyebrow-line" /> Encontre. Compare. Consulte.</div><h2>O material certo.<br /><em>Sem complicação.</em></h2></div>
-              <p>Conte à nossa equipe o que você procura. Ajudamos a encontrar a solução adequada para a sua operação.</p>
+              <div><div className="eyebrow"><span className="eyebrow-line" /> Encontre. Compare. Consulte.</div><h2>Escolha o que precisa.<br /><em>Vamos cotar juntos.</em></h2></div>
+              <p>Você pode começar com um nome, uma medida ou uma aplicação. Salve os itens e envie sua seleção para conversar sobre opções e condições.</p>
             </div>
             <div className="catalog-controls">
               <label className="search-box"><Search size={19} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="O que você está procurando?" aria-label="Pesquisar produtos e serviços" /><kbd>⌕</kbd></label>
               <div className="filter-hint">FILTRAR POR</div>
               <div className="filter-list" role="group" aria-label="Filtrar por categoria">
-                <button className={`filter-chip ${activeCategory === "todas" ? "active" : ""}`} onClick={() => setActiveCategory("todas")} type="button">Todas <span>{items.length}</span></button>
-                {categories.map((category) => <button key={category.id} className={`filter-chip ${activeCategory === category.id ? "active" : ""}`} onClick={() => setActiveCategory(category.id)} type="button">{category.shortName}</button>)}
+                <button className={`filter-chip ${activeCategory === "todas" ? "active" : ""}`} aria-pressed={activeCategory === "todas"} onClick={() => applyCategory("todas")} type="button">Todas <span>{items.length}</span></button>
+                {categories.map((category) => <button key={category.id} className={`filter-chip ${activeCategory === category.id ? "active" : ""}`} aria-pressed={activeCategory === category.id} onClick={() => applyCategory(category.id)} type="button">{category.shortName}</button>)}
               </div>
             </div>
             <div className="catalog-guide"><span>Compare até três itens ou salve sua seleção para um orçamento completo. Imagens ilustrativas das categorias.</span><button className="filter-chip" aria-pressed={onlySaved} onClick={()=>setOnlySaved(!onlySaved)}>{onlySaved?"Mostrar todos":"Ver salvos"} ({shop.lines.length})</button></div>
-            <div className="results-line"><span>{query || activeCategory !== "todas" ? `${visibleItems.length} resultado${visibleItems.length === 1 ? "" : "s"}` : `${visibleItems.length} itens no catálogo`}</span><span>Solicite informações e disponibilidade à nossa equipe</span></div>
+            {(query||activeCategory!=="todas"||onlySaved)&&<div className="active-filters"><span>{query?`Busca: “${query}”`:activeCategory!=="todas"?categories.find(c=>c.id===activeCategory)?.shortName:"Sua seleção"}</span><button onClick={clearFilters} type="button"><X size={16}/>Limpar filtros</button></div>}
+            <div className="results-line" role="status" aria-live="polite"><span>{query || activeCategory !== "todas" ? `${visibleItems.length} resultado${visibleItems.length === 1 ? "" : "s"}` : `${visibleItems.length} itens no catálogo`}</span><span>Solicite informações e disponibilidade à nossa equipe</span></div>
             {visibleItems.length > 0 ? (
               <div className="product-grid">{visibleItems.slice(0,pageSize).map((item) => <ProductCard key={item.id} item={item} onOpen={setSelectedItem} />)}</div>
             ) : (
@@ -243,8 +253,8 @@ function HomeContent() {
           <div className="company-mark" aria-hidden="true"><span>FM</span><i /></div>
           <div className="company-copy">
             <div className="eyebrow eyebrow-light"><span className="eyebrow-line" /> FIRMINO MATERIAIS</div>
-            <h2>O seu próximo projeto<br />merece um <em>bom parceiro.</em></h2>
-            <p>Materiais, locações e serviços em um só lugar. Fale com quem entende a rotina da sua operação e conte o que você precisa.</p>
+            <h2>Menos idas e vindas.<br /><em>Mais clareza para comprar.</em></h2>
+            <p>Uma ferramenta, os EPIs da equipe e os materiais da manutenção podem fazer parte da mesma conversa. Envie sua lista, explique a aplicação e consulte o que faz sentido para o seu projeto.</p>
             <QuoteButton />
           </div>
           <div className="company-stamp"><span>FM</span><small>MATERIAIS<br />& SOLUÇÕES</small><i /></div>
@@ -253,7 +263,7 @@ function HomeContent() {
         <ServiceMap/>
         <section className="contact-section" id="contato">
           <div className="section contact-inner">
-            <div><div className="eyebrow"><span className="eyebrow-line" /> FALE COM A NOSSA EQUIPE</div><h2>Precisa de material?<br /><em>Vamos conversar.</em></h2><p>Conte o que sua operação precisa. A equipe Firmino pode ajudar com materiais, locações e serviços.</p></div>
+            <div><div className="eyebrow"><span className="eyebrow-line" /> FALE COM A NOSSA EQUIPE</div><h2>Sua próxima compra<br /><em>começa com uma conversa.</em></h2><p>Já sabe o que precisa? Envie sua lista. Ainda está definindo? Conte a aplicação. A cotação é o primeiro passo para esclarecer especificações, valores e disponibilidade.</p></div>
             <div className="contact-card">
               <div className="contact-card-kicker">ATENDIMENTO DIRETO</div>
               <a className="contact-row whatsapp-row" href={generalQuote} target="_blank" rel="noopener noreferrer"><span className="contact-icon"><MessageCircle size={21} /></span><span><small>CHAME NO WHATSAPP</small><strong>(27) 98122-4105</strong></span><ArrowUpRight size={18} /></a>
