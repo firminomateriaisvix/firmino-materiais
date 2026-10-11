@@ -1,14 +1,78 @@
-# Firmino Materiais | Catálogo & Orçamentos
+# Firmino Materiais — V2
 
-React / Express / tRPC / Drizzle starter, adapted from the Sandbox web-db-user template.
+Versão independente de apresentação e consulta comercial para a Firmino Materiais, em Serra/ES. A implementação parte do repositório `https://github.com/firminomateriaisvix/firmino-materiais`, commit `c11feb7f2e068bdd53fdb0b0cc4aa31633e6dfc8`, preservando os **26 itens e nove categorias** publicados nessa origem. Desenvolvimento na branch local `v2`; o repositório original não recebe alterações automaticamente.
 
-- `pnpm dev`: development server; honors `PORT` (default 3000).
-- `pnpm build` / `pnpm start`: build and serve `dist/index.js` and `dist/public/`.
-- `pnpm db:migrate`: apply checked-in migrations. `pnpm db:push`: generate and apply new schema changes.
-- `pnpm check` / `pnpm test`: types and application tests.
+## O que esta versão entrega
 
-Start with the Webdev skill's default-template guide. Platform login, storage, payments and service contracts live in its shared references; read the relevant capability before extending its helper.
+- Identidade industrial em azul escuro e dourado, hierarquia de leitura e navegação responsiva.
+- Categorias em faixa horizontal com controles e gesto de deslizar.
+- Busca tolerante a acentos, filtros de categoria, paginação progressiva e filtro de itens salvos.
+- Lista de orçamento persistente neste navegador, quantidades inteiras, especificações por item e dados opcionais do solicitante.
+- WhatsApp e e-mail preparados com a lista completa e quebras de linha. O usuário revisa e envia no aplicativo de destino; não existe envio automático.
+- Download da solicitação em texto UTF-8.
+- Comparativo de até três itens com informações reais disponíveis; cards verticais em telas menores.
+- Mapa do Espírito Santo com Serra destacada, endereço consultável e destino informado transferido para a cotação.
+- Animações de entrada, marcador animado, estados de interação, foco visível, modais com contenção de foco, Escape e respeito à preferência de movimento reduzido.
 
-`server/_core/publicConfig.ts` exposes only named public runtime values. Private keys stay server-side. The platform serves managed `/manus-storage/` assets; the application does not register a second proxy.
+## Dados e limites
 
-Platform configuration is readable and editable through `webdev.config`. Default settings are initial values, not enforced constraints. The agent may modify the files, commands and configuration or follow the flexible guide for another stack.
+Domínio de destino definido pelo cliente: **firminomateriais.com.br**. A publicação de prévia não altera DNS, registro do domínio ou serviço de e-mail.
+
+| Finalidade | Contato |
+| --- | --- |
+| Cotações | cotacao@firminomateriais.com.br |
+| Financeiro | financeiro@firminomateriais.com.br |
+| Anderson | anderson@rpmintegra.com.br |
+| WhatsApp | +55 (27) 98122-4105 |
+| Endereço informado | Rua Camburi, 608 — Serra/ES — CEP 29176-300 |
+
+Os links de e-mail foram incluídos conforme solicitado. O funcionamento/ativação das caixas depende do provedor de e-mail e não foi comprovado por envio. Não foram acrescentados preços, marcas, estoque, prazos, certificações, história ou abrangência geográfica sem dados. As imagens existentes são **ilustrativas por categoria**, não fotografias individuais de cada produto. Frete, área de atendimento, unidade de venda e especificações são confirmados pela equipe.
+
+O catálogo é editado no arquivo `client/src/lib/catalog.ts`. Não existe painel administrador, autenticação, banco de pedidos, checkout ou integração com ERP nesta V2. A lista é salva no `localStorage` deste navegador; dados pessoais dos campos opcionais ficam apenas em memória e no texto que o visitante decide enviar. Não são compartilhados entre dispositivos.
+
+## Ambiente e execução
+
+Validado com Node.js **24.13.0** e pnpm **10.18.0**. React **19.2.1**, Vite **7.1.9**, TypeScript **5.9.3**, Tailwind CSS **4.1.14**, Radix Dialog e Lucide React. As versões completas, inclusive transitivas, estão no `pnpm-lock.yaml`. Preserve esse lockfile e o patch de Wouter em `patches/`. `.npmrc` utiliza instalação hoisted para resolução consistente no Windows.
+
+```sh
+corepack enable
+corepack prepare pnpm@10.18.0 --activate
+pnpm install --frozen-lockfile
+pnpm check
+pnpm build:static
+pnpm dev:static
+```
+
+Desenvolvimento: `http://127.0.0.1:4180`. Prévia da compilação: `pnpm preview`. Saída de produção: **dist/public/**. Publique o conteúdo dessa pasta na raiz do domínio, usando fallback de SPA para `index.html`. Não publique `node_modules`, `.git`, arquivos de ambiente ou o código do servidor legado.
+
+O clone conserva arquivos do servidor e componentes do template original para rastreabilidade. **Eles não são utilizados nem necessários pela aplicação estática V2.** Os comandos recomendados são `dev:static`, `build:static`, `check` e `preview`. O `tsconfig.json` verifica a árvore efetivamente importada pela entrada e a configuração de build. Os scripts legados de servidor/banco não fazem parte desta publicação.
+
+## Organização
+
+- `client/src/pages/Home.tsx`: página, busca, categorias, produtos e contatos.
+- `client/src/components/Commerce.tsx`: seleção, comparação, orçamento e composição de mensagens.
+- `client/src/components/ServiceMap.tsx`: localização e consulta de destino.
+- `client/src/lib/map-data.ts`: contorno projetado e ponto aproximado de Serra.
+- `client/public/maps/espirito-santo.geojson`: malha original do IBGE.
+- `client/public/catalog/`: imagens originais locais.
+- `client/src/index.css`: estilos originais; `v2.css`: refinamentos e componentes da V2.
+- `client/public/favicon.svg` e `manifest.webmanifest`: identidade da aba e aplicação.
+- `.openai/hosting.json`: identidade da publicação de prévia isolada. Não reutilizar esse ID em outro projeto.
+- `docs/PUBLICACAO.md`: entrega, domínio e manutenção.
+- `scripts/verify-v2.mjs`: cenários de verificação do navegador.
+
+## Verificação no navegador
+
+Instale Playwright em um ambiente de QA (não necessário ao site publicado) ou informe seu módulo existente com `PLAYWRIGHT_MODULE`. `CHROME_PATH` permite usar um Chrome instalado e `QA_URL` altera o endereço testado. Crie a pasta ignorada `work/` para capturas.
+
+```sh
+pnpm add -D playwright  # apenas no ambiente de QA
+pnpm exec playwright install chromium
+node scripts/verify-v2.mjs
+```
+
+O roteiro verifica seleção persistente, composição de mensagens, download, comparação e limite de três, layout vertical, busca, filtros, menu mobile, destino, imagens e larguras 320/390/768/1440 px. Não dispara mensagens ou pedidos.
+
+## Fonte geográfica
+
+Malha estadual simplificada do IBGE: `https://servicodados.ibge.gov.br/api/v3/malhas/estados/32?formato=application/vnd.geo+json&qualidade=minima`. O marcador representa Serra de forma aproximada; não representa geocodificação do endereço comercial nem cobertura de entrega.

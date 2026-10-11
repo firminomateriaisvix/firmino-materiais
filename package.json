@@ -1,6 +1,6 @@
 {
-  "name": "firminomateriais",
-  "version": "1.0.0",
+  "name": "firmino-materiais-v2",
+  "version": "2.0.0",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -12,8 +12,9 @@
     "test": "vitest run",
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
     "db:migrate": "drizzle-kit migrate",
-    "dev:static": "vite --host 0.0.0.0 --port ${PORT:-3000} --strictPort",
-    "build:static": "vite build"
+    "dev:static": "vite --host 127.0.0.1 --port 4180 --strictPort",
+    "build:static": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4180 --strictPort"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",
