@@ -26,7 +26,7 @@ Domínio de destino definido pelo cliente: **firminomateriais.com.br**. A public
 | --- | --- |
 | Cotações | cotacao@firminomateriais.com.br |
 | Financeiro | financeiro@firminomateriais.com.br |
-| Anderson | anderson@rpmintegra.com.br |
+| Anderson | anderson@firminomateriais.com.br |
 | WhatsApp | +55 (27) 98122-4105 |
 | Endereço informado | Rua Camburi, 608 — Serra/ES — CEP 29176-300 |
 

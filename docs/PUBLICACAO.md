@@ -6,7 +6,7 @@ O código da V2 conserva a origem e seu histórico Git. Trabalhe na pasta `firmi
 
 ## Domínio oficial
 
-Destino escolhido: **firminomateriais.com.br**. Não usar `rpmintegra.com.br` como domínio do site; ele aparece somente no contato pessoal do Anderson. Conectar o domínio após aprovação desta versão e autorização para alterar a hospedagem/DNS. Esta etapa ainda não foi executada.
+Destino escolhido: **firminomateriais.com.br**. Conectar o domínio após aprovação desta versão e autorização para alterar a hospedagem/DNS. Esta etapa ainda não foi executada.
 
 1. Aprovar conteúdo, direção visual, endereço comercial e contatos.
 2. Definir a hospedagem estática e registrar sua configuração de build: `pnpm install --frozen-lockfile`, `pnpm build:static`, saída `dist`.

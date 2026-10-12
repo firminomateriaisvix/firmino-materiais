@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { categories, items, type CatalogItem, type Category } from "@/lib/catalog";
 import {CommerceProvider, useShop, SelectionButton, ItemActions, Modal} from "@/components/Commerce";
+import {SearchSuggest} from "@/components/SearchSuggest";
 import ServiceMap from "@/components/ServiceMap";
 
 const EMAIL = "cotacao@firminomateriais.com.br";
@@ -44,7 +45,7 @@ const iconMap: Record<string, LucideIcon> = {
 function QuoteButton({ item, className = "" }: { item?: CatalogItem; className?: string }) {
   const shop=useShop();
   return (
-    <a className={`button button-amber ${className}`} href={shop.link(item)} target="_blank" rel="noopener noreferrer">
+    <a className={`button button-amber ${className}`} onClick={event=>{event.preventDefault();shop.requestQuote(item)}} href={shop.link(item)} target="_blank" rel="noopener noreferrer">
       <MessageCircle size={17} strokeWidth={2.2} />
       Solicitar orçamento
       <ArrowUpRight size={16} />
@@ -192,9 +193,9 @@ function HomeContent() {
             <p>Do material de manutenção ao equipamento para o próximo serviço: reúna o que precisa e converse com a Firmino em uma única cotação.</p>
             <div className="hero-actions">
               <a className="button button-amber" href="#catalogo">Montar minha cotação <ArrowRight size={17} /></a>
-              <a className="button button-outline-light" href={generalQuote} target="_blank" rel="noopener noreferrer"><MessageCircle size={17} /> Já tenho uma lista</a>
+              <a className="button button-outline-light" onClick={event=>{event.preventDefault();shop.requestQuote()}} href={generalQuote} target="_blank" rel="noopener noreferrer"><MessageCircle size={17} /> Já tenho uma lista</a>
             </div>
-            <form className="hero-query" onSubmit={event=>{event.preventDefault();setActiveCategory("todas");setOnlySaved(false);document.getElementById("catalogo")?.scrollIntoView({behavior:"smooth"})}}><label htmlFor="hero-search">Qual é o próximo item da sua lista?</label><div><Search size={20}/><input id="hero-search" value={query} onChange={event=>setQuery(event.target.value)} placeholder="Busque um material ou serviço"/><button type="submit" aria-label="Pesquisar no catálogo"><ArrowRight size={21}/></button></div></form>
+            <form className="hero-query" onSubmit={event=>{event.preventDefault();setActiveCategory("todas");setOnlySaved(false);document.getElementById("catalogo")?.scrollIntoView({behavior:"smooth"})}}><label htmlFor="hero-search">Qual é o próximo item da sua lista?</label><SearchSuggest id="hero-search" label="Pesquisar materiais e serviços no início" value={query} onChange={text=>{setQuery(text);setActiveCategory("todas");setOnlySaved(false)}} results={visibleItems} onChoose={setSelectedItem} hero/></form>
             <div className="hero-footnote"><span className="hero-footnote-rule" /> Materiais, locações e serviços. Uma conversa para começar.</div>
           </div>
           <div className="hero-index" aria-hidden="true"><span>FM</span><i /> ESPECIALISTAS EM FORNECIMENTO</div>
@@ -226,17 +227,17 @@ function HomeContent() {
           <div className="section catalog-inner">
             <div className="section-heading catalog-heading">
               <div><div className="eyebrow"><span className="eyebrow-line" /> Encontre. Compare. Consulte.</div><h2>Escolha o que precisa.<br /><em>Vamos cotar juntos.</em></h2></div>
-              <p>Você pode começar com um nome, uma medida ou uma aplicação. Salve os itens e envie sua seleção para conversar sobre opções e condições.</p>
+              <p>Você pode começar com um nome, uma medida ou uma aplicação. Inclua os itens na cotação e envie sua seleção para conversar sobre opções e condições.</p>
             </div>
             <div className="catalog-controls">
-              <label className="search-box"><Search size={19} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="O que você está procurando?" aria-label="Pesquisar produtos e serviços" /><kbd>⌕</kbd></label>
+              <SearchSuggest id="catalog-search" label="Pesquisar produtos e serviços" value={query} onChange={setQuery} results={visibleItems} onChoose={setSelectedItem}/>
               <div className="filter-hint">FILTRAR POR</div>
               <div className="filter-list" role="group" aria-label="Filtrar por categoria">
                 <button className={`filter-chip ${activeCategory === "todas" ? "active" : ""}`} aria-pressed={activeCategory === "todas"} onClick={() => applyCategory("todas")} type="button">Todas <span>{items.length}</span></button>
                 {categories.map((category) => <button key={category.id} className={`filter-chip ${activeCategory === category.id ? "active" : ""}`} aria-pressed={activeCategory === category.id} onClick={() => applyCategory(category.id)} type="button">{category.shortName}</button>)}
               </div>
             </div>
-            <div className="catalog-guide"><span>Compare até três itens ou salve sua seleção para um orçamento completo. Imagens ilustrativas das categorias.</span><button className="filter-chip" aria-pressed={onlySaved} onClick={()=>setOnlySaved(!onlySaved)}>{onlySaved?"Mostrar todos":"Ver salvos"} ({shop.lines.length})</button></div>
+            <div className="catalog-guide"><span>Compare até três itens ou inclua sua seleção na cotação para um orçamento completo. Imagens ilustrativas das categorias.</span><button className="filter-chip" aria-pressed={onlySaved} onClick={()=>setOnlySaved(!onlySaved)}>{onlySaved?"Mostrar todos":"Ver cotação"} ({shop.lines.length})</button></div>
             {(query||activeCategory!=="todas"||onlySaved)&&<div className="active-filters"><span>{query?`Busca: “${query}”`:activeCategory!=="todas"?categories.find(c=>c.id===activeCategory)?.shortName:"Sua seleção"}</span><button onClick={clearFilters} type="button"><X size={16}/>Limpar filtros</button></div>}
             <div className="results-line" role="status" aria-live="polite"><span>{query || activeCategory !== "todas" ? `${visibleItems.length} resultado${visibleItems.length === 1 ? "" : "s"}` : `${visibleItems.length} itens no catálogo`}</span><span>Solicite informações e disponibilidade à nossa equipe</span></div>
             {visibleItems.length > 0 ? (
@@ -245,7 +246,7 @@ function HomeContent() {
               <div className="empty-state"><PackageSearchIcon /><h3>Nenhum item encontrado</h3><p>Tente outra palavra ou peça ajuda à nossa equipe.</p><QuoteButton /></div>
             )}
             {visibleItems.length>pageSize&&<button className="button button-white load-more" onClick={()=>setPageSize(pageSize+12)}>Mostrar mais itens ({visibleItems.length-pageSize})</button>}
-            <div className="catalog-foot"><span><Check size={15} /> Sem preços genéricos: cotação conforme sua necessidade.</span><a href={generalQuote} target="_blank" rel="noopener noreferrer">Precisa de ajuda? <ArrowUpRight size={15} /></a></div>
+            <div className="catalog-foot"><span><Check size={15} /> Sem preços genéricos: cotação conforme sua necessidade.</span><a onClick={event=>{event.preventDefault();shop.requestQuote()}} href={generalQuote} target="_blank" rel="noopener noreferrer">Precisa de ajuda? <ArrowUpRight size={15} /></a></div>
           </div>
         </section>
 
@@ -266,10 +267,10 @@ function HomeContent() {
             <div><div className="eyebrow"><span className="eyebrow-line" /> FALE COM A NOSSA EQUIPE</div><h2>Sua próxima compra<br /><em>começa com uma conversa.</em></h2><p>Já sabe o que precisa? Envie sua lista. Ainda está definindo? Conte a aplicação. A cotação é o primeiro passo para esclarecer especificações, valores e disponibilidade.</p></div>
             <div className="contact-card">
               <div className="contact-card-kicker">ATENDIMENTO DIRETO</div>
-              <a className="contact-row whatsapp-row" href={generalQuote} target="_blank" rel="noopener noreferrer"><span className="contact-icon"><MessageCircle size={21} /></span><span><small>CHAME NO WHATSAPP</small><strong>(27) 98122-4105</strong></span><ArrowUpRight size={18} /></a>
+              <a className="contact-row whatsapp-row" onClick={event=>{event.preventDefault();shop.requestQuote()}} href={generalQuote} target="_blank" rel="noopener noreferrer"><span className="contact-icon"><MessageCircle size={21} /></span><span><small>CHAME NO WHATSAPP</small><strong>(27) 98122-4105</strong></span><ArrowUpRight size={18} /></a>
               <a className="contact-row" href={`mailto:${EMAIL}`}><span className="contact-icon"><Mail size={21} /></span><span><small>COTAÇÕES E LISTAS DE MATERIAIS</small><strong>{EMAIL}</strong></span><ArrowUpRight size={18} /></a>
               <a className="contact-row" href="mailto:financeiro@firminomateriais.com.br"><span className="contact-icon"><Mail size={21}/></span><span><small>FINANCEIRO</small><strong>financeiro@firminomateriais.com.br</strong></span><ArrowUpRight size={18}/></a>
-              <a className="contact-row" href="mailto:anderson@rpmintegra.com.br"><span className="contact-icon"><Mail size={21}/></span><span><small>CONTATO DIRETO · ANDERSON</small><strong>anderson@rpmintegra.com.br</strong></span><ArrowUpRight size={18}/></a>
+              <a className="contact-row" href="mailto:anderson@firminomateriais.com.br"><span className="contact-icon"><Mail size={21}/></span><span><small>CONTATO DIRETO · ANDERSON</small><strong>anderson@firminomateriais.com.br</strong></span><ArrowUpRight size={18}/></a>
               <div className="contact-card-note"><span className="status-dot" /> Resposta humana. Orçamento sob consulta.</div>
             </div>
           </div>
@@ -282,7 +283,7 @@ function HomeContent() {
       </footer>
 
       {selectedItem && <ProductDialog item={selectedItem} onClose={() => setSelectedItem(null)} />}
-      <a className="floating-whatsapp" href={generalQuote} target="_blank" rel="noopener noreferrer" aria-label="Solicitar orçamento pelo WhatsApp"><MessageCircle size={21} /><span>Orçamento</span></a>
+      <a className="floating-whatsapp" onClick={event=>{event.preventDefault();shop.requestQuote()}} href={generalQuote} target="_blank" rel="noopener noreferrer" aria-label="Solicitar orçamento pelo WhatsApp"><MessageCircle size={21} /><span>Orçamento</span></a>
     </div>
   );
 }
