@@ -28,7 +28,7 @@ import {CommerceProvider, useShop, SelectionButton, ItemActions, Modal} from "@/
 import {SearchSuggest} from "@/components/SearchSuggest";
 import ServiceMap from "@/components/ServiceMap";
 
-const EMAIL = "cotacao1@firminomateriais.com.br";
+const EMAIL = "Suprimentos@firminomateriais.com.br";
 
 const iconMap: Record<string, LucideIcon> = {
   pipes: CircleDot,
@@ -56,7 +56,7 @@ function QuoteButton({ item, className = "" }: { item?: CatalogItem; className?:
 function BrandMark() {
   return (
     <a className="brand" href="#inicio" aria-label="Firmino Materiais — início">
-      <span className="brand-symbol"><span>F</span><span>M</span></span>
+      <img src="/brand/emblem.png" alt="FM" className="brand-symbol-img" />
       <span className="brand-name"><strong>FIRMINO</strong><small>MATERIAIS</small></span>
     </a>
   );
@@ -268,8 +268,7 @@ function HomeContent() {
             <div className="contact-card">
               <div className="contact-card-kicker">ATENDIMENTO DIRETO</div>
               <a className="contact-row whatsapp-row" onClick={event=>{event.preventDefault();shop.requestQuote()}} href={generalQuote} target="_blank" rel="noopener noreferrer"><span className="contact-icon"><MessageCircle size={21} /></span><span><small>CHAME NO WHATSAPP</small><strong>(27) 98122-4105</strong></span><ArrowUpRight size={18} /></a>
-              <a className="contact-row" href={`mailto:${EMAIL}`}><span className="contact-icon"><Mail size={21} /></span><span><small>COTAÇÕES E LISTAS DE MATERIAIS</small><strong>{EMAIL}</strong></span><ArrowUpRight size={18} /></a>
-              <a className="contact-row" href="mailto:suprimentos@firminomateriais.com.br"><span className="contact-icon"><Mail size={21}/></span><span><small>CONTATO DIRETO · SUPRIMENTOS</small><strong>suprimentos@firminomateriais.com.br</strong></span><ArrowUpRight size={18}/></a>
+              <a className="contact-row" href={`mailto:${EMAIL}`}><span className="contact-icon"><Mail size={21} /></span><span><small>COTAÇÕES E SUPRIMENTOS</small><strong>{EMAIL}</strong></span><ArrowUpRight size={18} /></a>
               <div className="contact-card-note"><span className="status-dot" /> Resposta humana. Orçamento sob consulta.</div>
             </div>
           </div>
